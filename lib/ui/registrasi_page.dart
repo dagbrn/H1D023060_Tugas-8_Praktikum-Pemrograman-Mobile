@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:pertemuan10/bloc/registrasi_bloc.dart';
+import 'package:pertemuan10/widget/success_dialog.dart';
+import 'package:pertemuan10/widget/warning_dialog.dart';
 
 class RegistrasiPage extends StatefulWidget {
-  
   const RegistrasiPage({Key? key}) : super(key: key);
-  
+
   @override
   _RegistrasiPageState createState() => _RegistrasiPageState();
-  
 }
 
 class _RegistrasiPageState extends State<RegistrasiPage> {
-
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -37,7 +37,7 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
                 _emailTextField(),
                 _passwordTextField(),
                 _passwordKonfirmasiTextField(),
-                _buttonRegistrasi()
+                _buttonRegistrasi(),
               ],
             ),
           ),
@@ -52,13 +52,12 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       decoration: const InputDecoration(labelText: "Nama"),
       keyboardType: TextInputType.text,
       controller: _namaTextboxController,
-      
+
       validator: (value) {
         if (value!.length < 3) {
-        return "Nama harus diisi minimal 3 karakter";
+          return "Nama harus diisi minimal 3 karakter";
         }
         return null;
-        
       },
     );
   }
@@ -69,19 +68,20 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       decoration: const InputDecoration(labelText: "Email"),
       keyboardType: TextInputType.emailAddress,
       controller: _emailTextboxController,
-      
+
       validator: (value) {
         //validasi harus diisi
         if (value!.isEmpty) {
-        return 'Email harus diisi';
+          return 'Email harus diisi';
         }
 
         //validasi email
-        Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+        Pattern pattern =
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
         RegExp regex = RegExp(pattern.toString());
 
         if (!regex.hasMatch(value)) {
-        return "Email tidak valid";
+          return "Email tidak valid";
         }
         return null;
       },
@@ -95,11 +95,11 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       keyboardType: TextInputType.text,
       obscureText: true,
       controller: _passwordTextboxController,
-      
+
       validator: (value) {
         //jika karakter yang dimasukkan kurang dari 6 karakter
         if (value!.length < 6) {
-        return "Password harus diisi minimal 6 karakter";
+          return "Password harus diisi minimal 6 karakter";
         }
         return null;
       },
@@ -116,7 +116,7 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       validator: (value) {
         //jika inputan tidak sama dengan password
         if (value != _passwordTextboxController.text) {
-        return "Konfirmasi Password tidak sama";
+          return "Konfirmasi Password tidak sama";
         }
         return null;
       },
@@ -130,11 +130,46 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       onPressed: () {
         var validate = _formKey.currentState!.validate();
         if (validate) {
-          setState(() {
-            _isLoading = true;
-          });
+          if (!_isLoading) _submit();
         }
-      }
+      },
     );
+  }
+
+  void _submit() {
+    _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+    RegistrasiBloc.registrasi(
+      nama: _namaTextboxController.text,
+      email: _emailTextboxController.text,
+      password: _passwordTextboxController.text,
+    ).then(
+      (value) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => SuccessDialog(
+            description: "Registrasi berhasil, silahkan login",
+            okClick: () {
+              Navigator.pop(context);
+            },
+          ),
+        );
+      },
+      onError: (error) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => const WarningDialog(
+            description: "Registrasi gagal, silahkan coba lagi",
+          ),
+        );
+      },
+    );
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
