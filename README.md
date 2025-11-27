@@ -1,7 +1,4 @@
-# 📱 Aplikasi Manajemen Produk - Flutter
-
-> **Tugas 8 Pertemuan 11 - Praktikum Pemrograman Mobile**  
-> Aplikasi CRUD (Create, Read, Update, Delete) produk dengan fitur autentikasi menggunakan Flutter dan REST API
+# Tugas 8 Pertemuan 11 - Praktikum Pemrograman Mobile
 
 ## 👤 Data Diri
 
@@ -9,8 +6,6 @@
 **NIM**: H1D023060  
 **Shift Lama**: F  
 **Shift Baru**: A
-
----
 
 ## 📋 Daftar Isi
 - [Deskripsi](#-deskripsi)
