@@ -20,9 +20,6 @@
   - [6. Mengubah Data Produk](#6-mengubah-data-produk)
   - [7. Menghapus Produk](#7-menghapus-produk)
   - [8. Logout](#8-logout)
-- [Cara Menjalankan](#-cara-menjalankan)
-- [Konfigurasi API](#-konfigurasi-api)
-
 ---
 
 ## 📖 Deskripsi
